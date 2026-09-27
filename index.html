@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anuvo · Understand every word</title>
+<meta name="description" content="Anuvo translates text, photos, live camera and video in 21 languages, and explains any word you tap. Created by Ayaan Bajaj.">
+<meta name="author" content="Ayaan Bajaj">
+<meta name="theme-color" content="#0E7C7B">
+<meta property="og:title" content="Anuvo · Understand every word">
+<meta property="og:description" content="Translate text, photos, live camera and video in 21 languages. Tap any word to learn what it means.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Noto+Sans:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F4; --panel:#FFFFFF; --ink:#152238; --muted:#5B6878; --line:#D5DDE3;
+  --accent:#0E7C7B; --accent-ink:#FFFFFF; --mark:#F4B840; --soft:#E3F1F0; --err:#B42318; --nav:rgba(238,242,244,.86);
+  --radius-lg:18px; --radius-sm:10px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0F1724; --panel:#172234; --ink:#E6EDF5; --muted:#9AA8B8; --line:#2A3950;
+  --accent:#3FB8B6; --accent-ink:#0F1724; --soft:#1C3340; --err:#FF8A7A; --nav:rgba(15,23,36,.86); } }
+:root[data-theme="dark"]{
+  --bg:#0F1724; --panel:#172234; --ink:#E6EDF5; --muted:#9AA8B8; --line:#2A3950;
+  --accent:#3FB8B6; --accent-ink:#0F1724; --soft:#1C3340; --err:#FF8A7A; --nav:rgba(15,23,36,.86); }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.55 "Noto Sans","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Noto Sans",system-ui,sans-serif;margin:0;line-height:1.1}
+a{color:inherit}
+button,select,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+img,video,canvas,svg{max-width:100%}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:var(--nav);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.logo svg{width:36px;height:36px;flex:none}
+.logo b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.45rem;font-weight:800;letter-spacing:-.02em}
+.nav nav{display:flex;gap:22px}
+.nav nav a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem}
+.nav nav a:hover{color:var(--ink)}
+.cta{background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:999px;white-space:nowrap}
+@media (max-width:760px){.nav nav{display:none}}
+
+/* hero */
+.hero{padding-top:clamp(28px,5vw,56px);padding-bottom:20px}
+.hero h1{font-size:clamp(2.2rem,5.4vw,4rem);font-weight:800;letter-spacing:-.03em;max-width:20ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--muted);font-size:clamp(1rem,1.6vw,1.15rem);max-width:56ch;margin:14px 0 0}
+
+/* app */
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;padding:14px 0 40px;align-items:start}
+@media (max-width:900px){.app{grid-template-columns:1fr}}
+.work{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 12px 32px -20px rgba(21,34,56,.35)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.bar label{font-weight:600}
+.bar select{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 14px;font-weight:600}
+.bar .auto{margin-left:auto;color:var(--muted);font-size:.88rem;display:flex;align-items:center;gap:6px}
+.bar .auto::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.tabs{display:flex;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{flex:1;min-width:92px;border:0;background:none;padding:14px 10px;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.pane{padding:18px}
+.pane[hidden]{display:none}
+textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;background:transparent;font-size:1.05rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn{border:1px solid var(--line);background:var(--panel);padding:9px 16px;border-radius:999px;font-weight:600}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.hint{color:var(--muted);font-size:.88rem;margin:0}
+.drop{border:2px dashed var(--line);border-radius:var(--radius-lg);padding:26px;text-align:center;color:var(--muted);display:block;cursor:pointer}
+.drop.over{border-color:var(--accent);background:var(--soft)}
+.drop input{display:none}
+.media{margin-top:12px;border-radius:var(--radius-sm);overflow:hidden;background:#000;display:grid;place-items:center}
+.media[hidden]{display:none}
+.media img,.media video{display:block;max-height:420px;width:100%;object-fit:contain}
+.cam-wrap{position:relative}
+.cam-wrap .reticle{position:absolute;inset:14%;border:2px solid rgba(255,255,255,.7);border-radius:14px;pointer-events:none}
+.result{border-top:1px solid var(--line);padding:18px;display:grid;gap:14px}
+.result[hidden]{display:none}
+.res-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{background:var(--soft);border-radius:999px;padding:3px 12px;font-size:.85rem}
+.orig{color:var(--muted);white-space:pre-wrap;margin:0;font-size:.95rem;max-height:160px;overflow:auto}
+.out{font-size:1.35rem;line-height:1.6;white-space:pre-wrap;margin:0}
+.out .w{border-radius:4px;cursor:pointer;padding:0 1px;border-bottom:1px dotted var(--muted)}
+.out .w:hover,.out .w.on{background:var(--mark);color:#152238;border-bottom-color:transparent}
+.roman{color:var(--muted);font-style:italic;margin:0}
+.status{color:var(--muted);font-size:.95rem;display:flex;gap:10px;align-items:center}
+.status.err{color:var(--err)}
+.dots::after{content:"";animation:d 1.2s steps(4) infinite}
+@keyframes d{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+@media (prefers-reduced-motion:reduce){.dots::after{animation:none;content:"..."}}
+
+.side{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);display:flex;flex-direction:column;
+  position:sticky;top:calc(80px + env(safe-area-inset-top,0px));max-height:calc(100vh - 96px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+@media (max-width:900px){.side{position:static;max-height:none}}
+.side-head{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+.side-head h2{font-size:1.25rem}
+.side-head p{margin:4px 0 0;color:var(--muted);font-size:.88rem}
+.feed{flex:1;overflow:auto;padding:14px 18px;display:grid;gap:12px;align-content:start;min-height:220px}
+.card{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg)}
+.card h3{font-size:1.3rem}
+.card .pos{color:var(--muted);font-size:.85rem;margin:2px 0 8px}
+.card p{margin:6px 0}
+.card ul{margin:6px 0 0;padding-left:18px}
+.card li{margin:4px 0}
+.card .sub{color:var(--muted);font-size:.9rem}
+.msg{border-radius:14px;padding:10px 13px;white-space:pre-wrap;max-width:92%}
+.msg.me{background:var(--accent);color:var(--accent-ink);justify-self:end}
+.msg.ai{background:var(--bg);border:1px solid var(--line)}
+.ask{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.ask input{flex:1;border:1px solid var(--line);border-radius:999px;padding:9px 14px;background:transparent;min-width:0}
+.empty{color:var(--muted);font-size:.95rem}
+.offline{margin:0 0 10px;padding:10px 14px;border-radius:12px;background:var(--soft);font-size:.9rem}
+.offline[hidden]{display:none}
+
+/* sections */
+.section{padding:clamp(40px,6vw,72px) 0;border-top:1px solid var(--line)}
+.section h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+.section .lead{color:var(--muted);max-width:60ch;margin:10px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px}
+.feat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px}
+.feat .ic{width:42px;height:42px;border-radius:12px;background:var(--soft);display:grid;place-items:center;margin-bottom:12px}
+.feat .ic svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.feat h3{font-size:1.15rem}
+.feat p{color:var(--muted);margin:6px 0 0;font-size:.95rem}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:28px;padding:0;list-style:none}
+.steps li{counter-increment:s;padding:20px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 var(--radius-lg) var(--radius-lg) 0}
+.steps li::before{content:counter(s,decimal-leading-zero);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.6rem;color:var(--mark);display:block}
+.steps b{display:block;font-size:1.1rem;margin:4px 0}
+.steps span{color:var(--muted);font-size:.95rem}
+.about{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center}
+.about svg{width:clamp(88px,14vw,140px);height:auto}
+@media (max-width:600px){.about{grid-template-columns:1fr}}
+.langs-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.langs-list span{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:.9rem}
+footer{border-top:1px solid var(--line);padding:26px 0 30px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;color:var(--muted);font-size:.9rem}
+footer .logo b{font-size:1.15rem;color:var(--ink)}
+footer .logo svg{width:28px;height:28px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:9px 18px;border-radius:999px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="16" fill="#0E7C7B"/>
+    <path d="M28 12h22a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6h-2v7l-8-7H28a6 6 0 0 1-6-6V18a6 6 0 0 1 6-6z" fill="#F4B840"/>
+    <path d="M44 19h8M44 26h5" stroke="#0E7C7B" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M14 23h22a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-8 7v-7h-2a6 6 0 0 1-6-6V29a6 6 0 0 1 6-6z" fill="#FFFFFF"/>
+    <path d="M18.5 44 25 28.5 31.5 44M21 38.5h8" fill="none" stroke="#0E7C7B" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Anuvo home"><svg role="img" aria-hidden="true"><use href="#mark"/></svg><b>Anuvo</b></a>
+    <nav aria-label="Main">
+      <a href="#translate">Translate</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#about">About</a>
+    </nav>
+    <a class="cta" href="#translate">Start translating</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <h1>Understand <em>every word</em>, in any language.</h1>
+    <p>Type it, paste it, snap it or film it. Anuvo figures out the language on its own, translates it, and explains any word you tap.</p>
+  </section>
+
+  <section class="wrap" id="translate" aria-label="Translator">
+    <p class="offline" id="offline" hidden></p>
+    <div class="app">
+      <div class="work">
+        <div class="bar">
+          <label for="tgt">Translate to</label>
+          <select id="tgt"></select>
+          <span class="auto">Language detected automatically</span>
+        </div>
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" data-tab="text">Text</button>
+          <button role="tab" aria-selected="false" data-tab="image">Image</button>
+          <button role="tab" aria-selected="false" data-tab="camera">Live camera</button>
+          <button role="tab" aria-selected="false" data-tab="video">Video</button>
+        </div>
+
+        <div class="pane" data-pane="text">
+          <textarea id="txt" placeholder="Write or paste anything, in any language…"></textarea>
+          <div class="row">
+            <button class="btn primary" id="txtGo">Translate</button>
+            <button class="btn" id="pasteBtn">Paste</button>
+            <button class="btn" id="clearBtn">Clear</button>
+            <p class="hint">Press Enter to translate · Shift+Enter for a new line</p>
+          </div>
+        </div>
+
+        <div class="pane" data-pane="image" hidden>
+          <label class="drop" id="imgDrop">
+            <input type="file" id="imgFile" accept="image/*">
+            <strong>Drop a photo here, click to choose, or paste one</strong><br>
+            <span class="hint">Signs, menus, labels, screenshots. Reads English and Hindi text.</span>
+          </label>
+          <div class="media" id="imgBox" hidden><img id="imgPrev" alt="Selected image"></div>
+          <div class="row"><button class="btn primary" id="imgGo" disabled>Translate image</button></div>
+        </div>
+
+        <div class="pane" data-pane="camera" hidden>
+          <div class="media cam-wrap" id="camBox" hidden>
+            <video id="cam" playsinline muted autoplay></video>
+            <div class="reticle" aria-hidden="true"></div>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="camStart">Start camera</button>
+            <button class="btn primary" id="camSnap" hidden>Capture &amp; translate</button>
+            <button class="btn" id="camFlip" hidden>Flip camera</button>
+            <button class="btn" id="camStop" hidden>Stop</button>
+          </div>
+          <p class="hint" id="camMsg" style="margin-top:10px">Point at any text and tap capture. The result appears below.</p>
+          <label class="btn" id="camFallback" hidden style="display:inline-block;margin-top:10px">
+            Take a photo instead<input type="file" accept="image/*" capture="environment" id="camFile" hidden>
+          </label>
+        </div>
+
+        <div class="pane" data-pane="video" hidden>
+          <label class="drop" id="vidDrop">
+            <input type="file" id="vidFile" accept="video/*">
+            <strong>Drop a video here or click to choose</strong><br>
+            <span class="hint">Pause on subtitles or on-screen text, then translate that frame</span>
+          </label>
+          <div class="media" id="vidBox" hidden><video id="vid" controls playsinline></video></div>
+          <div class="row"><button class="btn primary" id="vidGo" disabled>Translate this frame</button></div>
+        </div>
+
+        <div class="result" id="result" hidden aria-live="polite">
+          <div class="status" id="status"></div>
+          <div id="resBody" hidden>
+            <div class="res-head">
+              <span class="chip" id="detected"></span>
+              <span class="chip" id="toChip"></span>
+              <span style="margin-left:auto"></span>
+              <button class="btn" id="copyBtn">Copy</button>
+              <button class="btn" id="speakBtn">Listen</button>
+            </div>
+            <p class="out" id="out" style="margin-top:14px"></p>
+            <p class="roman" id="roman"></p>
+            <details style="margin-top:6px"><summary class="hint">Original text</summary><p class="orig" id="orig"></p></details>
+            <p class="hint" style="margin-top:8px">Tap any word to see its meaning in the word helper.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side" aria-label="AI tutor">
+        <div class="side-head">
+          <h2>Word helper</h2>
+          <p>Tap any word in a translation to see its meaning and dictionary definition.</p>
+        </div>
+        <div class="feed" id="feed">
+          <p class="empty" id="feedEmpty">Translate something, then tap any word to learn what it means.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <h2>Everything you need to understand anything</h2>
+      <p class="lead">One place for every way you meet a new language, from a message on your phone to a sign across the street.</p>
+      <div class="grid">
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div><h3>Type or paste</h3><p>Write or paste anything. No need to pick the language, Anuvo detects it for you.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/></svg></div><h3>Photos</h3><p>Menus, signs, labels, notes. Drop a picture or paste a screenshot and read it in your language.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/></svg></div><h3>Live camera</h3><p>Point your camera at text in the real world and capture it for an instant translation.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2v8l-4-2"/></svg></div><h3>Video</h3><p>Pause any video on subtitles or on-screen text and translate that exact frame.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5z"/><path d="M6 10v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div><h3>Word helper</h3><p>Tap any word to see what it means, its dictionary definition, and hear how it sounds.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M11 5v14M5 12h12"/><path d="M15 5h5v5"/></svg></div><h3>Listen and copy</h3><p>Hear the translation spoken aloud and copy it in one tap to use anywhere.</p></div>
+      </div>
+      <div class="langs-list" id="langsList" aria-label="Supported languages"></div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><b>Choose your language</b><span>Pick the language you want to read in. That's the only setting.</span></li>
+        <li><b>Give Anuvo the text</b><span>Type, paste, upload a photo, use your camera, or pause a video.</span></li>
+        <li><b>Understand it fully</b><span>Read the translation, listen to it, and tap words to learn what they mean.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap about">
+      <svg role="img" aria-label="Anuvo logo"><use href="#mark"/></svg>
+      <div>
+        <h2>About Anuvo</h2>
+        <p class="lead">The name comes from <em>anuvaad</em>, the word for translation in Hindi. Anuvo was created by Ayaan Bajaj to help people not just translate a language, but actually understand it, one word at a time.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="#top" style="margin-right:0"><svg aria-hidden="true"><use href="#mark"/></svg><b>Anuvo</b></a>
+    <span>© 2026 Anuvo. Created by Ayaan Bajaj.</span>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- languages ---------- */
+const LANGS=[["English","en","en-US"],["Hindi","hi","hi-IN"],["Bengali","bn","bn-IN"],["Tamil","ta","ta-IN"],["Telugu","te","te-IN"],["Marathi","mr","mr-IN"],["Gujarati","gu","gu-IN"],["Kannada","kn","kn-IN"],["Malayalam","ml","ml-IN"],["Punjabi","pa","pa-IN"],["Urdu","ur","ur-IN"],["Spanish","es","es-ES"],["French","fr","fr-FR"],["German","de","de-DE"],["Italian","it","it-IT"],["Portuguese","pt","pt-BR"],["Russian","ru","ru-RU"],["Arabic","ar","ar-SA"],["Japanese","ja","ja-JP"],["Korean","ko","ko-KR"],["Chinese (Simplified)","zh-CN","zh-CN"]];
+const CODE=Object.fromEntries(LANGS.map(l=>[l[0],l[1]]));
+const VOICE=Object.fromEntries(LANGS.map(l=>[l[0],l[2]]));
+const $=id=>document.getElementById(id);
+const tgt=$("tgt");
+for(const [n] of LANGS){ tgt.add(new Option(n,n)); const s=document.createElement("span"); s.textContent=n; $("langsList").append(s); }
+try{ tgt.value=localStorage.getItem("anuvo.tgt")||"Hindi"; }catch{ tgt.value="Hindi"; }
+tgt.onchange=()=>{ try{localStorage.setItem("anuvo.tgt",tgt.value);}catch{} if(last&&last.original_text) translateString(last.original_text,"Translating"); };
+
+/* ---------- automatic language detection (runs in the browser) ---------- */
+const STOP={
+  English:"the and is are was you to of in it that this what how for with have be not my your we they i he she do can will",
+  Spanish:"el la los las de que y es en un una por para con no está cómo qué hola gracias muy pero yo tu su del al",
+  French:"le la les de et est un une des que pas pour vous je ce qui dans avec comment bonjour merci ne sur au du nous tu",
+  German:"der die das und ist nicht ich du ein eine zu mit wie was sie es auf hallo danke bitte ja nein den dem wir ihr",
+  Italian:"il lo la gli le di e è un una che non per sono come ciao grazie della questo mi ti ho hai",
+  Portuguese:"o a os as de e é um uma que não para com você está como olá obrigado obrigada muito eu meu"
+};
+const STOPSET=Object.fromEntries(Object.entries(STOP).map(([k,v])=>[k,new Set(v.split(" "))]));
+function detectLanguage(text){
+  const n=re=>(text.match(re)||[]).length;
+  const kana=n(/[\u3040-\u30ff]/g);
+  const scripts=[
+    ["Japanese",kana*3],["Korean",n(/[\uac00-\ud7af\u1100-\u11ff]/g)],["Chinese (Simplified)",n(/[\u4e00-\u9fff]/g)],
+    ["Devanagari",n(/[\u0900-\u097f]/g)],["Bengali",n(/[\u0980-\u09ff]/g)],["Punjabi",n(/[\u0a00-\u0a7f]/g)],
+    ["Gujarati",n(/[\u0a80-\u0aff]/g)],["Tamil",n(/[\u0b80-\u0bff]/g)],["Telugu",n(/[\u0c00-\u0c7f]/g)],
+    ["Kannada",n(/[\u0c80-\u0cff]/g)],["Malayalam",n(/[\u0d00-\u0d7f]/g)],["ArabicScript",n(/[\u0600-\u06ff]/g)],
+    ["Russian",n(/[\u0400-\u04ff]/g)],["Latin",n(/[a-zA-Z\u00c0-\u024f]/g)]
+  ].sort((a,b)=>b[1]-a[1]);
+  const top=scripts[0][0];
+  if(!scripts[0][1]) return null;
+  if(top==="Chinese (Simplified)"&&kana) return "Japanese";
+  if(top==="Devanagari") return /आहे|आणि|नाही|च्या|ळ|झाले|आम्ही|तुम्ही|होते/.test(text)?"Marathi":"Hindi";
+  if(top==="ArabicScript") return /[ٹڈڑںےہکگپچژ]/.test(text)?"Urdu":"Arabic";
+  if(top!=="Latin") return top;
+  const words=text.toLowerCase().match(/[a-z\u00c0-\u024f']+/g)||[];
+  const score={English:0,Spanish:0,French:0,German:0,Italian:0,Portuguese:0};
+  for(const w of words) for(const l in score) if(STOPSET[l].has(w)) score[l]++;
+  if(/[ñ¿¡]/.test(text)) score.Spanish+=2;
+  if(/[çœ]|[àèù](?![a-z])|ê|â|î|ô/.test(text)) score.French+=1.5;
+  if(/[ßäöü]/.test(text)) score.German+=2;
+  if(/[ãõ]/.test(text)) score.Portuguese+=2;
+  let best="English",bs=score.English;
+  for(const l in score) if(score[l]>bs){best=l;bs=score[l];}
+  return best;
+}
+
+/* ---------- free translation (MyMemory, no key) ---------- */
+const decoder=document.createElement("textarea");
+function decodeHTML(s){ decoder.innerHTML=s; return decoder.value; }
+const bytes=s=>new TextEncoder().encode(s).length;
+function chunk(line,max=450){
+  if(bytes(line)<=max) return [line];
+  const out=[]; let cur="";
+  const parts=line.split(/(?<=[.!?।॥。！？;:,])\s*/);
+  for(const p of parts){
+    const piece=p.trim(); if(!piece) continue;
+    if(bytes(piece)>max){ for(const w of piece.split(/\s+/)){ if(bytes(cur+" "+w)>max){ if(cur) out.push(cur); cur=w; } else cur=cur?cur+" "+w:w; } continue; }
+    if(bytes(cur+" "+piece)>max){ if(cur) out.push(cur); cur=piece; } else cur=cur?cur+" "+piece:piece;
+  }
+  if(cur) out.push(cur);
+  return out;
+}
+const memo=new Map();
+async function mm(text,from,to,signal){
+  const key=from+"|"+to+"|"+text;
+  if(memo.has(key)) return memo.get(key);
+  let r;
+  try{ r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`,{signal}); }
+  catch(e){ if(e.name==="AbortError") throw e; throw new Error("Can't reach the translation service. Check your internet connection."); }
+  const j=await r.json().catch(()=>null);
+  const t=j?.responseData?.translatedText||"";
+  if(Number(j?.responseStatus)===429||/MYMEMORY WARNING/i.test(t)){
+    const h=t.match(/NEXT AVAILABLE IN\s+(\d+)\s+HOURS/i);
+    throw new Error("Today's free translation limit is used up on this internet connection."+(h?` It resets in about ${Number(h[1])||1} hours.`:" It resets tomorrow.")+" Try again later or from a different network.");
+  }
+  if(!j||Number(j.responseStatus)!==200||!t) throw new Error("The translation service couldn't handle that. Try shorter or simpler text.");
+  const out=decodeHTML(t);
+  memo.set(key,out);
+  return out;
+}
+async function translateAll(text,from,to,signal,onStep){
+  const lines=text.split("\n"), out=[];
+  const total=lines.reduce((a,l)=>a+(l.trim()?chunk(l.trim()).length:0),0); let done=0;
+  for(const line of lines){
+    if(!line.trim()){ out.push(""); continue; }
+    const parts=[];
+    for(const c of chunk(line.trim())){ parts.push(await mm(c,from,to,signal)); done++; if(total>1) onStep?.(done,total); }
+    out.push(parts.join(" "));
+  }
+  return out.join("\n");
+}
+
+/* ---------- reading text from images (Tesseract, runs in the browser) ---------- */
+let worker=null, ocrLabel=null;
+function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=()=>rej(new Error("Couldn't load the text reader. Check your internet connection.")); document.head.append(s); }); }
+async function readImage(blob){
+  if(!window.Tesseract) await loadScript("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js");
+  if(!worker){
+    ocrLabel?.("Setting up the text reader (first time only)");
+    worker=await Tesseract.createWorker(["eng","hin"],1,{logger:m=>{
+      if(m.status==="recognizing text") ocrLabel?.(`Reading text ${Math.round((m.progress||0)*100)}%`);
+    }});
+  }
+  ocrLabel?.("Reading text");
+  const {data}=await worker.recognize(blob);
+  return (data.text||"").split("\n").map(l=>l.replace(/\s+/g," ").trim()).filter(l=>(l.match(/\p{L}/gu)||[]).length>=2).join("\n");
+}
+async function shrink(blob,max=2000){
+  let im;
+  try{ im=await createImageBitmap(blob); }
+  catch{ im=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error("That file couldn't be read. Try a JPG or PNG.")); i.src=URL.createObjectURL(blob); }); }
+  const k=Math.min(1,max/Math.max(im.width,im.height)), c=document.createElement("canvas");
+  c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+  return c;
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll(".pane").forEach(p=>p.hidden=p.dataset.pane!==b.dataset.tab);
+  if(b.dataset.tab!=="camera") stopCam();
+});
+function showTab(t){ document.querySelector(`.tabs button[data-tab="${t}"]`).click(); }
+
+/* ---------- results ---------- */
+let last=null, ctl=null, busyLabel=null;
+function setStatus(msg,isErr){ $("result").hidden=false; const s=$("status"); s.className="status"+(isErr?" err":""); s.textContent=msg||""; }
+function busy(label){
+  $("result").hidden=false; $("resBody").hidden=true;
+  const s=$("status"); s.className="status"; s.innerHTML="";
+  const sp=document.createElement("span"); sp.className="dots"; sp.textContent=label; busyLabel=sp;
+  const stop=document.createElement("button"); stop.className="btn"; stop.textContent="Stop"; stop.onclick=()=>ctl?.abort();
+  s.append(sp,stop);
+}
+const setBusy=t=>{ if(busyLabel) busyLabel.textContent=t; };
+function segWords(text){
+  if(window.Intl&&Intl.Segmenter) return [...new Intl.Segmenter(undefined,{granularity:"word"}).segment(text)].map(s=>({t:s.segment,w:s.isWordLike}));
+  return text.split(/(\s+|[.,!?;:"'()]+)/).filter(Boolean).map(t=>({t,w:/\p{L}/u.test(t)}));
+}
+function render(r){
+  last=r; $("status").textContent=""; $("resBody").hidden=false;
+  $("detected").textContent=r.detected_language+" detected";
+  $("toChip").textContent=r.same?"Already in "+tgt.value:"→ "+tgt.value;
+  const out=$("out"); out.innerHTML="";
+  for(const s of segWords(r.translation)){
+    if(s.w){
+      const sp=document.createElement("span"); sp.className="w"; sp.textContent=s.t; sp.tabIndex=0;
+      sp.onclick=()=>{ out.querySelectorAll(".w.on").forEach(x=>x.classList.remove("on")); sp.classList.add("on"); explainWord(s.t); };
+      sp.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();sp.click();} };
+      out.append(sp);
+    } else out.append(document.createTextNode(s.t));
+  }
+  $("roman").textContent="";
+  $("orig").textContent=r.original_text;
+}
+const MAX_CHARS=3000;
+async function translateString(text,label,keepBusy){
+  text=text.trim();
+  if(!text){ setStatus("No text found to translate.",true); return; }
+  let note="";
+  if(text.length>MAX_CHARS){ text=text.slice(0,MAX_CHARS); note=" (first 3,000 characters)"; }
+  const from=detectLanguage(text);
+  if(!from){ setStatus("Couldn't find any words to translate.",true); return; }
+  ctl?.abort(); ctl=new AbortController();
+  if(!keepBusy) busy(label||"Translating"); else setBusy(label||"Translating");
+  try{
+    if(from===tgt.value){ render({detected_language:from,original_text:text,translation:text,same:true}); return; }
+    const translation=await translateAll(text,CODE[from],CODE[tgt.value],ctl.signal,(d,t)=>setBusy(`Translating part ${d} of ${t}`));
+    render({detected_language:from+note,original_text:text,translation,source:from});
+  }catch(e){ if(e.name==="AbortError"){ $("result").hidden=!last; if(last) render(last); } else setStatus(e.message,true); }
+}
+function translateText(){ const t=$("txt").value; if(!t.trim()){ toast("Write or paste some text first"); return; } translateString(t); }
+async function translateImage(source,label){
+  const myCtl=new AbortController(); ctl?.abort(); ctl=myCtl;
+  busy(label||"Reading the image");
+  ocrLabel=setBusy;
+  try{
+    const canvas=source instanceof HTMLCanvasElement?source:await shrink(source);
+    const text=await readImage(canvas);
+    if(myCtl.signal.aborted) return;
+    if(!text){ setStatus("No readable text found. Try a clearer, closer photo with good light.",true); return; }
+    await translateString(text,"Translating",true);
+    $("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+  }catch(e){ if(!myCtl.signal.aborted) setStatus(e.message||"Couldn't read that image.",true); }
+  finally{ ocrLabel=null; }
+}
+
+/* ---------- text ---------- */
+$("txtGo").onclick=translateText;
+$("txt").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); translateText(); } });
+$("clearBtn").onclick=()=>{ $("txt").value=""; $("txt").focus(); };
+$("pasteBtn").onclick=async()=>{
+  try{ const t=await navigator.clipboard.readText(); if(t){ $("txt").value=t; translateText(); } else toast("Clipboard is empty"); }
+  catch{ $("txt").focus(); toast("Press Ctrl+V (⌘V on Mac) to paste"); }
+};
+document.addEventListener("paste",e=>{
+  const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));
+  if(!item) return;
+  e.preventDefault(); const f=item.getAsFile(); showTab("image"); setImage(f); translateImage(f);
+});
+
+/* ---------- image ---------- */
+let imgBlob=null;
+function setImage(f){ if(!f) return; imgBlob=f; $("imgPrev").src=URL.createObjectURL(f); $("imgBox").hidden=false; $("imgGo").disabled=false; }
+$("imgFile").onchange=e=>setImage(e.target.files[0]);
+$("imgGo").onclick=()=>imgBlob&&translateImage(imgBlob);
+function dropZone(el,accept,fn){
+  el.addEventListener("dragover",e=>{e.preventDefault();el.classList.add("over");});
+  el.addEventListener("dragleave",()=>el.classList.remove("over"));
+  el.addEventListener("drop",e=>{e.preventDefault();el.classList.remove("over");const f=[...e.dataTransfer.files].find(f=>f.type.startsWith(accept));if(f)fn(f);});
+}
+dropZone($("imgDrop"),"image/",setImage);
+
+/* ---------- camera ---------- */
+let stream=null, facing="environment";
+async function startCam(){
+  try{
+    stopCam();
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920},height:{ideal:1080}},audio:false});
+    $("cam").srcObject=stream; $("camBox").hidden=false;
+    ["camSnap","camFlip","camStop"].forEach(id=>$(id).hidden=false); $("camStart").hidden=true; $("camFallback").hidden=true;
+    $("camMsg").textContent="Hold the text steady inside the frame, then tap capture.";
+  }catch{
+    $("camMsg").textContent="The camera couldn't start (permission blocked or no camera). You can take a photo instead.";
+    $("camFallback").hidden=false;
+  }
+}
+function stopCam(){ stream?.getTracks().forEach(t=>t.stop()); stream=null; $("camBox").hidden=true; ["camSnap","camFlip","camStop"].forEach(id=>$(id).hidden=true); $("camStart").hidden=false; }
+function frame(v){
+  const w=v.videoWidth,h=v.videoHeight; if(!w) throw new Error("not ready");
+  const c=document.createElement("canvas"); c.width=w; c.height=h; c.getContext("2d").drawImage(v,0,0,w,h); return c;
+}
+$("camStart").onclick=startCam;
+$("camStop").onclick=stopCam;
+$("camFlip").onclick=()=>{ facing=facing==="environment"?"user":"environment"; startCam(); };
+$("camSnap").onclick=()=>{ try{ translateImage(frame($("cam")),"Reading what the camera sees"); }catch{ toast("Camera isn't ready yet"); } };
+$("camFile").onchange=e=>{ const f=e.target.files[0]; if(f) translateImage(f); };
+
+/* ---------- video ---------- */
+function setVideo(f){ if(!f) return; $("vid").src=URL.createObjectURL(f); $("vidBox").hidden=false; $("vidGo").disabled=false; }
+$("vidFile").onchange=e=>setVideo(e.target.files[0]);
+dropZone($("vidDrop"),"video/",setVideo);
+$("vidGo").onclick=()=>{ $("vid").pause(); try{ translateImage(frame($("vid")),"Reading this frame"); }catch{ toast("Play the video to a frame first"); } };
+
+/* ---------- copy / listen ---------- */
+$("copyBtn").onclick=async()=>{
+  const t=last?.translation||""; if(!t) return;
+  try{ await navigator.clipboard.writeText(t); toast("Copied"); }
+  catch{ const r=document.createRange(); r.selectNodeContents($("out")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); try{document.execCommand("copy");toast("Copied");}catch{toast("Select the text and press Ctrl+C");} }
+};
+function speak(text,lang){
+  if(!("speechSynthesis" in window)){ toast("Speech isn't available in this browser"); return; }
+  speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=VOICE[lang]||"en-US"; speechSynthesis.speak(u);
+}
+$("speakBtn").onclick=()=>{ if(last?.translation) speak(last.translation,tgt.value); };
+
+/* ---------- word helper ---------- */
+const feed=$("feed");
+function addToFeed(n){ $("feedEmpty")?.remove(); feed.prepend(n); feed.scrollTop=0; }
+function el(tag,cls,text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+function plain(html){ return new DOMParser().parseFromString(html,"text/html").body.textContent.trim(); }
+async function dictionary(word,lang){
+  const key=CODE[lang].split("-")[0];
+  for(const w of [...new Set([word,word.toLowerCase()])]){
+    try{
+      const r=await fetch("https://en.wiktionary.org/api/rest_v1/page/definition/"+encodeURIComponent(w));
+      if(!r.ok) continue;
+      const j=await r.json(); const entries=j[key];
+      if(entries?.length) return entries.slice(0,2).map(e=>({pos:e.partOfSpeech,defs:(e.definitions||[]).map(d=>plain(d.definition)).filter(Boolean).slice(0,2)})).filter(e=>e.defs.length);
+    }catch{}
+  }
+  return [];
+}
+async function explainWord(word){
+  const lang=tgt.value;
+  const meaningLang=lang==="English"?(last?.source||null):"English";
+  const card=el("div","card");
+  const head=el("div"); head.style.cssText="display:flex;align-items:center;gap:10px";
+  const h=el("h3",null,word); const lb=el("button","btn","Listen"); lb.style.cssText="margin-left:auto;padding:5px 12px"; lb.onclick=()=>speak(word,lang);
+  head.append(h,lb); card.append(head);
+  const loading=el("p","sub dots","Looking it up"); card.append(loading);
+  addToFeed(card);
+  const [m,d]=await Promise.allSettled([
+    meaningLang&&meaningLang!==lang?mm(word,CODE[lang],CODE[meaningLang]):Promise.resolve(null),
+    dictionary(word,lang)
+  ]);
+  loading.remove();
+  if(m.status==="fulfilled"&&m.value){ const p=el("p"); p.append(el("strong",null,`In ${meaningLang}: `),document.createTextNode(m.value)); card.append(p); }
+  else if(m.status==="rejected") card.append(el("p","sub",m.reason?.message||"Couldn't get the meaning."));
+  const defs=d.status==="fulfilled"?d.value:[];
+  if(defs.length){
+    for(const e of defs){ card.append(el("p","pos",e.pos)); const ul=el("ul"); e.defs.forEach(x=>ul.append(el("li",null,x))); card.append(ul); }
+  } else if(!(m.status==="fulfilled"&&m.value)) card.append(el("p","sub","No dictionary entry found for this word."));
+}
+
+/* ---------- toast ---------- */
+let tt; function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("show"),1800); }
+
+/* ---------- installable app ---------- */
+if("serviceWorker" in navigator&&location.protocol==="https:") addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
